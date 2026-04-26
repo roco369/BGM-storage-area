@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rocoのBGM置き場</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lavender:#d8c9f0;--mint:#b8e8d8;--blush:#f5cfe0;
+    --sky:#b8d8f0;--peach:#f5dcc8;--lilac:#e8c8f0;
+    --bg:#f0eaf8;--text:#4a3d6b;--text-soft:#7a6a9a;
+    --accent:#9b7fd4;--accent2:#6db8a0;
+    --card-bg:rgba(255,255,255,.65);
+    --shadow:0 4px 24px rgba(155,127,212,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 20%,rgba(216,201,240,.55) 0%,transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 80%,rgba(184,216,240,.45) 0%,transparent 70%),
+      radial-gradient(ellipse 40% 40% at 60% 30%,rgba(184,232,216,.35) 0%,transparent 65%),
+      radial-gradient(ellipse 30% 30% at 30% 75%,rgba(245,207,224,.40) 0%,transparent 60%);
+    z-index:-2;pointer-events:none;
+  }
+  .notes-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+  .note{position:absolute;opacity:0;animation:floatNote linear infinite;color:var(--accent);}
+  @keyframes floatNote{
+    0%{opacity:0;transform:translateY(0) rotate(0deg);}
+    10%{opacity:.18;}80%{opacity:.12;}
+    100%{opacity:0;transform:translateY(-110vh) rotate(25deg);}
+  }
+  header{text-align:center;padding:3.5rem 1rem 2.5rem;}
+  .logo-wrap{display:inline-block;position:relative;}
+  .logo-badge{
+    position:absolute;top:-14px;right:-22px;
+    background:linear-gradient(135deg,var(--blush),var(--lilac));
+    color:var(--text);font-size:.6rem;font-weight:700;
+    padding:3px 8px;border-radius:20px;letter-spacing:.05em;
+    box-shadow:0 2px 8px rgba(155,127,212,.2);white-space:nowrap;
+  }
+  h1{
+    font-family:'Kaisei Opti',serif;font-size:clamp(2rem,6vw,3.6rem);font-weight:700;
+    background:linear-gradient(135deg,#9b7fd4 0%,#6db8a0 50%,#d479a0 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    letter-spacing:.04em;line-height:1.2;
+  }
+  .subtitle{margin-top:.6rem;color:var(--text-soft);font-size:.92rem;letter-spacing:.08em;font-weight:300;}
+  .wave-deco{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:28px;margin:1rem auto 0;width:120px;}
+  .wave-bar{width:4px;border-radius:4px;background:linear-gradient(to top,var(--accent),var(--mint));animation:wavePulse ease-in-out infinite;}
+  @keyframes wavePulse{0%,100%{transform:scaleY(.4);opacity:.6;}50%{transform:scaleY(1);opacity:1;}}
+  nav{display:flex;justify-content:center;flex-wrap:wrap;gap:.6rem;padding:0 1rem 2rem;}
+  .nav-btn{
+    padding:.45rem 1.2rem;border-radius:50px;border:1.5px solid transparent;
+    font-family:'Zen Kaku Gothic New',sans-serif;font-size:.85rem;font-weight:700;
+    cursor:pointer;transition:all .25s;letter-spacing:.05em;
+  }
+  .nav-btn.bgm{background:linear-gradient(135deg,var(--lavender),var(--lilac));color:var(--text);border-color:rgba(155,127,212,.3);}
+  .nav-btn.se{background:linear-gradient(135deg,var(--mint),var(--sky));color:#2d6b5a;border-color:rgba(109,184,160,.3);}
+  .nav-btn.info{background:linear-gradient(135deg,var(--peach),var(--blush));color:#7a4a5a;border-color:rgba(245,207,224,.5);}
+  .nav-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 4px 16px rgba(155,127,212,.2);}
+  .nav-btn.active{box-shadow:0 2px 12px rgba(155,127,212,.35);transform:translateY(-1px);}
+  main{max-width:980px;margin:0 auto;padding:0 1.2rem 4rem;}
+  .section{display:none;animation:fadeIn .4s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{
+    display:flex;align-items:center;gap:.8rem;
+    margin-bottom:1.6rem;padding-bottom:.8rem;
+    border-bottom:2px dashed rgba(155,127,212,.2);
+  }
+  .section-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+  .section-icon.bgm{background:linear-gradient(135deg,var(--lavender),var(--lilac));}
+  .section-icon.se{background:linear-gradient(135deg,var(--mint),var(--sky));}
+  .section-title{font-family:'Kaisei Opti',serif;font-size:1.3rem;}
+  .section-count{margin-left:auto;font-size:.78rem;color:var(--text-soft);background:rgba(155,127,212,.1);padding:2px 10px;border-radius:20px;}
+  .cat-label{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.75rem;font-weight:700;padding:4px 14px;
+    border-radius:20px;letter-spacing:.06em;margin:1.4rem 0 .9rem;
+  }
+  .cat-night  {background:rgba(180,160,230,.25);color:#5a3d90;border:1px solid rgba(180,160,230,.4);}
+  .cat-steam  {background:rgba(200,180,140,.25);color:#6a4a20;border:1px solid rgba(200,180,140,.4);}
+  .cat-journey{background:rgba(160,210,180,.25);color:#2d6a50;border:1px solid rgba(160,210,180,.4);}
+  .cat-drama  {background:rgba(220,160,180,.25);color:#8a2a50;border:1px solid rgba(220,160,180,.4);}
+  .cat-comical{background:rgba(255,220,100,.25);color:#7a5a00;border:1px solid rgba(255,220,100,.4);}
+  .cat-ui     {background:rgba(184,216,240,.35);color:#2a5080;border:1px solid rgba(184,216,240,.5);}
+  .cat-gacha  {background:rgba(255,200,120,.25);color:#7a4a00;border:1px solid rgba(255,200,120,.4);}
+  .cat-magic  {background:rgba(220,180,255,.30);color:#6a2a90;border:1px solid rgba(220,180,255,.4);}
+  .cat-kawaii {background:rgba(255,200,210,.30);color:#9a3060;border:1px solid rgba(255,200,210,.4);}
+  .track-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem;margin-bottom:.2rem;}
+  .track-card{
+    background:var(--card-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-radius:16px;padding:1.1rem 1.2rem 1rem;
+    box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);
+    transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden;
+  }
+  .track-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;
+    background:linear-gradient(90deg,var(--lavender),var(--accent),var(--mint));
+  }
+  .track-card.se-card::before{background:linear-gradient(90deg,var(--mint),var(--sky),var(--blush));}
+  .track-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(155,127,212,.18);}
+  .track-card.playing{box-shadow:0 0 0 2px var(--accent),0 8px 32px rgba(155,127,212,.25);}
+  .track-card.se-card.playing{box-shadow:0 0 0 2px var(--accent2),0 8px 32px rgba(109,184,160,.25);}
+  .track-name{font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:.55rem;}
+  .track-meta{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-bottom:.8rem;}
+  .meta-chip{font-size:.68rem;padding:2px 8px;border-radius:10px;}
+  .chip-time{background:rgba(155,127,212,.1);color:var(--text-soft);}
+  .chip-mp3{background:rgba(216,201,240,.35);color:#6a4fa0;font-weight:700;}
+  .player-area{margin-bottom:.75rem;}
+  .progress-wrap{
+    position:relative;height:6px;border-radius:6px;
+    background:rgba(155,127,212,.15);cursor:pointer;margin-bottom:.55rem;overflow:hidden;
+  }
+  .se-card .progress-wrap{background:rgba(109,184,160,.15);}
+  .progress-bar{
+    height:100%;border-radius:6px;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--mint));
+    transition:width .1s linear;pointer-events:none;
+  }
+  .se-card .progress-bar{background:linear-gradient(90deg,var(--accent2),var(--sky));}
+  .time-row{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-soft);margin-bottom:.6rem;}
+  .ctrl-row{display:flex;align-items:center;gap:.55rem;}
+  .play-btn{
+    width:34px;height:34px;border-radius:50%;border:none;
+    background:linear-gradient(135deg,var(--accent),#b899e8);
+    color:#fff;font-size:.8rem;cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s,box-shadow .2s;
+    box-shadow:0 2px 8px rgba(155,127,212,.3);
+  }
+  .se-card .play-btn{background:linear-gradient(135deg,var(--accent2),#5acca8);box-shadow:0 2px 8px rgba(109,184,160,.3);}
+  .play-btn:hover{transform:scale(1.1);}
+  .play-btn:active{transform:scale(.95);}
+  .waveform-mini{flex:1;height:26px;display:flex;align-items:center;gap:2px;overflow:hidden;cursor:pointer;}
+  .wm-bar{flex:1;border-radius:2px;background:rgba(155,127,212,.18);min-width:2px;}
+  .se-card .wm-bar{background:rgba(109,184,160,.18);}
+  .dl-row{display:flex;gap:.5rem;}
+  .dl-btn{
+    padding:.28rem .9rem;border-radius:20px;
+    border:1.5px solid rgba(155,127,212,.35);background:rgba(255,255,255,.7);
+    color:var(--accent);font-size:.72rem;font-weight:700;
+    text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:3px;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+  }
+  .dl-btn:hover{background:var(--lavender);transform:translateY(-1px);}
+  .se-card .dl-btn{color:var(--accent2);border-color:rgba(109,184,160,.35);}
+  .se-card .dl-btn:hover{background:var(--mint);}
+  .info-banner{
+    background:var(--card-bg);backdrop-filter:blur(12px);border-radius:16px;
+    padding:1.5rem 1.8rem;border:1px solid rgba(255,255,255,.8);
+    box-shadow:var(--shadow);margin-bottom:1.2rem;
+  }
+  .info-banner h3{font-family:'Kaisei Opti',serif;font-size:1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+  .info-banner p,.info-banner li{font-size:.82rem;color:var(--text-soft);line-height:1.8;font-weight:300;}
+  .info-banner ul{padding-left:1.2rem;}
+  .info-banner li{margin-bottom:.15rem;}
+  .info-banner a{color:var(--accent);text-decoration:none;}
+  .info-banner a:hover{text-decoration:underline;}
+  footer{text-align:center;padding:2rem 1rem;font-size:.75rem;color:var(--text-soft);font-weight:300;letter-spacing:.05em;}
+  footer span{color:var(--accent);}
+  @media(max-width:480px){
+    h1{font-size:2rem;}
+    .track-grid{grid-template-columns:1fr;}
+    .info-banner{padding:1.2rem;}
+  }
+</style>
+</head>
+<body>
+<div class="notes-bg" id="notesBg"></div>
+<header>
+  <div class="logo-wrap">
+    <h1>🎵 rocoのBGM置き場</h1>
+    <span class="logo-badge">FREE</span>
+  </div>
+  <p class="subtitle">BGM &amp; 効果音 — ご自由にどうぞ</p>
+  <div class="wave-deco" id="waveDeco"></div>
+</header>
+<nav>
+  <button class="nav-btn bgm active" onclick="showSection('bgm',this)">🎼 BGM</button>
+  <button class="nav-btn se"         onclick="showSection('se',this)">🔔 効果音</button>
+  <button class="nav-btn info"       onclick="showSection('info',this)">📋 ご利用について</button>
+</nav>
+<main>
+<div class="section active" id="sec-bgm">
+  <div class="section-header">
+    <div class="section-icon bgm">🎼</div>
+    <span class="section-title">BGM</span>
+    <span class="section-count">全20曲</span>
+  </div>
+  <div class="cat-label cat-night">🌙 幻想・夜想</div>
+  <div class="track-grid" id="grid-night"></div>
+  <div class="cat-label cat-steam">⚙️ スチーム・古城</div>
+  <div class="track-grid" id="grid-steam"></div>
+  <div class="cat-label cat-journey">🍂 旅・情景</div>
+  <div class="track-grid" id="grid-journey"></div>
+  <div class="cat-label cat-drama">🎭 ドラマ・壮大</div>
+  <div class="track-grid" id="grid-drama"></div>
+  <div class="cat-label cat-comical">🥬 コミカル</div>
+  <div class="track-grid" id="grid-comical"></div>
+</div>
+<div class="section" id="sec-se">
+  <div class="section-header">
+    <div class="section-icon se">🔔</div>
+    <span class="section-title">効果音 (SE)</span>
+    <span class="section-count">全57個</span>
+  </div>
+  <div class="cat-label cat-ui">🖱️ UI・システム</div>
+  <div class="track-grid" id="grid-ui"></div>
+  <div class="cat-label cat-gacha">🎰 ガチャ・演出</div>
+  <div class="track-grid" id="grid-gacha"></div>
+  <div class="cat-label cat-magic">✨ 魔法・キラキラ</div>
+  <div class="track-grid" id="grid-magic"></div>
+  <div class="cat-label cat-kawaii">😄 コミカル・ゆるかわ</div>
+  <div class="track-grid" id="grid-kawaii"></div>
+</div>
+<div class="section" id="sec-info">
+  <div class="section-header">
+    <div class="section-icon bgm">📋</div>
+    <span class="section-title">ご利用について</span>
+  </div>
+  <div class="info-banner">
+    <h3>✅ 無料・クレジット不要で使えること</h3>
+    <ul>
+      <li>個人・商用ゲーム・同人ゲームへの使用</li>
+      <li>動画・配信・YouTubeなどのBGM使用</li>
+      <li>SNS・Webサイトへの使用</li>
+      <li>加工・編集・ループ編集</li>
+    </ul>
+    <p style="margin-top:.7rem">クレジット表記は任意ですが、記載していただけるととても嬉しいです 🎵</p>
+  </div>
+  <div class="info-banner">
+    <h3>❌ ご遠慮いただきたいこと</h3>
+    <ul>
+      <li>素材そのものの再配布・転載・販売</li>
+      <li>素材のみをまとめたパックとしての再公開</li>
+      <li>AI学習データセットへの使用</li>
+      <li>公序良俗に反するコンテンツへの使用</li>
+    </ul>
+  </div>
+  <div class="info-banner">
+    <h3>📝 クレジット表記例</h3>
+    <p>BGM/SE：roco (rocoのBGM置き場)</p>
+  </div>
+  <div class="info-banner">
+    <h3>💬 お問い合わせ</h3>
+    <p>ご質問・ご報告はXにてお気軽にどうぞ。<br>
+      X：<a href="https://x.com/roco8xsw" target="_blank" rel="noopener">@roco8xsw</a>
+    </p>
+  </div>
+</div>
+</main>
+<footer>&copy; 2024 <span>roco</span> — BGM &amp; SE Free Download Site</footer>
+<script>
+/* ══ データ定義 ══
+   file   : audioフォルダ内の実ファイル名（拡張子なし・ASCII）
+   label  : ページ上の表示名
+   dlname : ダウンロード時のファイル名（拡張子なし）
+   dur    : 再生時間表示
+*/
+const BGM = {
+  night:[
+    {file:'bgm_oboro_tsukiyo',        label:'おぼろ月夜',         dlname:'おぼろ月夜',         dur:'2:24'},
+    {file:'bgm_seijaku_tomoshibi',    label:'静寂のともしび',     dlname:'静寂のともしび',     dur:'2:18'},
+    {file:'bgm_tomoshibi',            label:'灯火',               dlname:'灯火',               dur:'2:38'},
+    {file:'bgm_kohaku_madoromi',      label:'琥珀のまどろみ',     dlname:'琥珀のまどろみ',     dur:'2:04'},
+    {file:'bgm_shinju_irie',          label:'真珠色の入江',       dlname:'真珠色の入江',       dur:'2:03'},
+  ],
+  steam:[
+    {file:'bgm_haguruma_seiki',       label:'歯車仕掛けの聖域',   dlname:'歯車仕掛けの聖域',   dur:'1:08'},
+    {file:'bgm_toki_jiin',            label:'時を刻む寺院',       dlname:'時を刻む寺院',       dur:'1:53'},
+    {file:'bgm_antique_waltz',        label:'アンティークワルツ', dlname:'アンティークワルツ', dur:'1:43'},
+    {file:'bgm_kohaku_kyutei',        label:'琥珀色の宮廷',       dlname:'琥珀色の宮廷',       dur:'0:48'},
+    {file:'bgm_bronze_march',         label:'ブロンズの行進曲',   dlname:'ブロンズの行進曲',   dur:'1:12'},
+  ],
+  journey:[
+    {file:'bgm_kaede_rashinban',      label:'楓の羅針盤',         dlname:'楓の羅針盤',         dur:'2:18'},
+    {file:'bgm_akikaze_parade',       label:'秋風のパレード',     dlname:'秋風のパレード',     dur:'2:18'},
+    {file:'bgm_utsuroi_michishirube', label:'移ろいの道標',       dlname:'移ろいの道標',       dur:'1:57'},
+    {file:'bgm_kinu_nami',            label:'絹の波打ち際',       dlname:'絹の波打ち際',       dur:'1:54'},
+    {file:'bgm_yugure_noise',         label:'夕暮れノイズ',       dlname:'夕暮れノイズ',       dur:'2:32'},
+  ],
+  drama:[
+    {file:'bgm_inishie_requiem',      label:'古のレクイエム',       dlname:'古のレクイエム',       dur:'1:49'},
+    {file:'bgm_kaede_fanfare',        label:'楓風のファンファーレ', dlname:'楓風のファンファーレ', dur:'1:38'},
+    {file:'bgm_fushigi_kashiya',      label:'不思議な菓子職人',     dlname:'不思議な菓子職人',     dur:'0:27'},
+  ],
+  comical:[
+    {file:'bgm_cabbage_adventure',    label:'キャベツの冒険',     dlname:'キャベツの冒険',     dur:'0:52'},
+    {file:'bgm_veggie_cannon',        label:'びっくり野菜大砲',   dlname:'びっくり野菜大砲',   dur:'0:53'},
+  ],
+};
+
+const SE = {
+  ui:[
+    {file:'かるいクリック',       label:'かるいクリック',       dlname:'かるいクリック',       dur:'—'},
+    {file:'ぴこっとクリック',     label:'ぴこっとクリック',     dlname:'ぴこっとクリック',     dur:'—'},
+    {file:'かろやかなホバー',     label:'かろやかなホバー',     dlname:'かろやかなホバー',     dur:'—'},
+    {file:'しずかなホバー',       label:'しずかなホバー',       dlname:'しずかなホバー',       dur:'—'},
+    {file:'きらりと決定',         label:'きらりと決定',         dlname:'きらりと決定',         dur:'—'},
+    {file:'キラリと決定',         label:'キラリと決定',         dlname:'キラリと決定',         dur:'—'},
+    {file:'ていばんの決定',       label:'ていばんの決定',       dlname:'ていばんの決定',       dur:'—'},
+    {file:'ベルで決定',           label:'ベルで決定',           dlname:'ベルで決定',           dur:'—'},
+    {file:'ひくめの戻る',         label:'ひくめの戻る',         dlname:'ひくめの戻る',         dur:'—'},
+    {file:'たかめの戻る',         label:'たかめの戻る',         dlname:'たかめの戻る',         dur:'—'},
+    {file:'しっぱいのがっかり',   label:'しっぱいのがっかり',   dlname:'しっぱいのがっかり',   dur:'—'},
+    {file:'しっぱいのひゅーん',   label:'しっぱいのひゅーん',   dlname:'しっぱいのひゅーん',   dur:'—'},
+    {file:'しっぱいのびよん',     label:'しっぱいのびよん',     dlname:'しっぱいのびよん',     dur:'—'},
+    {file:'ぴこっと失敗',         label:'ぴこっと失敗',         dlname:'ぴこっと失敗',         dur:'—'},
+    {file:'ぶぶーと失敗',         label:'ぶぶーと失敗',         dlname:'ぶぶーと失敗',         dur:'—'},
+    {file:'きらりとせいかい',     label:'きらりとせいかい',     dlname:'きらりとせいかい',     dur:'—'},
+    {file:'せいかいのチャイム',   label:'せいかいのチャイム',   dlname:'せいかいのチャイム',   dur:'—'},
+    {file:'お知らせのピンポン',   label:'お知らせのピンポン',   dlname:'お知らせのピンポン',   dur:'—'},
+    {file:'ピコンと通知',         label:'ピコンと通知',         dlname:'ピコンと通知',         dur:'—'},
+    {file:'ポコンと通知',         label:'ポコンと通知',         dlname:'ポコンと通知',         dur:'—'},
+    {file:'たかめの通知',         label:'たかめの通知',         dlname:'たかめの通知',         dur:'—'},
+    {file:'しゅっと切り替え',     label:'しゅっと切り替え',     dlname:'しゅっと切り替え',     dur:'—'},
+    {file:'ひゅっと切り替え',     label:'ひゅっと切り替え',     dlname:'ひゅっと切り替え',     dur:'—'},
+    {file:'すぽんと切り替え',     label:'すぽんと切り替え',     dlname:'すぽんと切り替え',     dur:'—'},
+    {file:'ぱっと切り替え',       label:'ぱっと切り替え',       dlname:'ぱっと切り替え',       dur:'—'},
+    {file:'さらっとワープ',       label:'さらっとワープ',       dlname:'さらっとワープ',       dur:'—'},
+    {file:'ふわっとワープ',       label:'ふわっとワープ',       dlname:'ふわっとワープ',       dur:'—'},
+    {file:'しゃらんと一覧表示',   label:'しゃらんと一覧表示',   dlname:'しゃらんと一覧表示',   dur:'—'},
+    {file:'ぱっと一覧表示',       label:'ぱっと一覧表示',       dlname:'ぱっと一覧表示',       dur:'—'},
+    {file:'しずかな停止',         label:'しずかな停止',         dlname:'しずかな停止',         dur:'—'},
+    {file:'ふしぎな停止',         label:'ふしぎな停止',         dlname:'ふしぎな停止',         dur:'—'},
+  ],
+  gacha:[
+    {file:'たのしい回転',         label:'たのしい回転',         dlname:'たのしい回転',         dur:'—'},
+    {file:'ルンルンな回転',       label:'ルンルンな回転',       dlname:'ルンルンな回転',       dur:'—'},
+    {file:'しんみりなタメ',       label:'しんみりなタメ',       dlname:'しんみりなタメ',       dur:'—'},
+    {file:'どきどきのタメ',       label:'どきどきのタメ',       dlname:'どきどきのタメ',       dur:'—'},
+    {file:'もっきんカウント',     label:'もっきんカウント',     dlname:'もっきんカウント',     dur:'—'},
+    {file:'リズムカウント',       label:'リズムカウント',       dlname:'リズムカウント',       dur:'—'},
+    {file:'かるい出現',           label:'かるい出現',           dlname:'かるい出現',           dur:'—'},
+    {file:'ぴょこっと出現',       label:'ぴょこっと出現',       dlname:'ぴょこっと出現',       dur:'—'},
+    {file:'ぽこっと出現',         label:'ぽこっと出現',         dlname:'ぽこっと出現',         dur:'—'},
+    {file:'ポワンと出現',         label:'ポワンと出現',         dlname:'ポワンと出現',         dur:'—'},
+    {file:'ふつうの出現',         label:'ふつうの出現',         dlname:'ふつうの出現',         dur:'—'},
+    {file:'きらきらレア',         label:'きらきらレア',         dlname:'きらきらレア',         dur:'—'},
+    {file:'かがやくレア',         label:'かがやくレア',         dlname:'かがやくレア',         dur:'—'},
+    {file:'かがやくレア出現',     label:'かがやくレア出現',     dlname:'かがやくレア出現',     dur:'—'},
+    {file:'キラキラ出現',         label:'キラキラ出現',         dlname:'キラキラ出現',         dur:'—'},
+    {file:'ごうかなレア出現',     label:'ごうかなレア出現',     dlname:'ごうかなレア出現',     dur:'—'},
+    {file:'にじいろのかがやき',   label:'にじいろのかがやき',   dlname:'にじいろのかがやき',   dur:'—'},
+    {file:'にじいろのしゅつげん', label:'にじいろのしゅつげん', dlname:'にじいろのしゅつげん', dur:'—'},
+  ],
+  magic:[
+    {file:'まほうのきらめき',     label:'まほうのきらめき',     dlname:'まほうのきらめき',     dur:'—'},
+    {file:'まほうのひかり',       label:'まほうのひかり',       dlname:'まほうのひかり',       dur:'—'},
+    {file:'やさしい強調',         label:'やさしい強調',         dlname:'やさしい強調',         dur:'—'},
+    {file:'かわいい強調',         label:'かわいい強調',         dlname:'かわいい強調',         dur:'—'},
+  ],
+  kawaii:[
+    {file:'ぽよんと跳ねる',       label:'ぽよんと跳ねる',       dlname:'ぽよんと跳ねる',       dur:'—'},
+    {file:'ぽよんとゲット',       label:'ぽよんとゲット',       dlname:'ぽよんとゲット',       dur:'—'},
+    {file:'ぷよんと跳ねる',       label:'ぷよんと跳ねる',       dlname:'ぷよんと跳ねる',       dur:'—'},
+    {file:'ぷよんとゲット',       label:'ぷよんとゲット',       dlname:'ぷよんとゲット',       dur:'—'},
+  ],
+};
+
+/* ══ オーディオ管理 ══ */
+let currentAudio=null,currentIdx=null,rafId=null;
+function fmtTime(s){return`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;}
+function stopCurrent(){
+  if(currentAudio){currentAudio.pause();currentAudio.currentTime=0;}
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+  if(currentIdx!==null){
+    const c=document.querySelector(`.track-card[data-idx="${currentIdx}"]`);
+    if(c){
+      c.classList.remove('playing');
+      c.querySelector('.play-btn').textContent='▶';
+      c.querySelectorAll('.wm-bar').forEach(b=>b.style.animation='');
+      document.getElementById(`prog${currentIdx}`).style.width='0%';
+      document.getElementById(`cur${currentIdx}`).textContent='0:00';
+    }
+  }
+  currentAudio=null;currentIdx=null;
+}
+function startProgress(idx){
+  const audio=document.getElementById(`audio${idx}`);
+  const prog=document.getElementById(`prog${idx}`);
+  const cur=document.getElementById(`cur${idx}`);
+  (function tick(){
+    if(audio.duration){prog.style.width=(audio.currentTime/audio.duration*100)+'%';cur.textContent=fmtTime(audio.currentTime);}
+    rafId=requestAnimationFrame(tick);
+  })();
+}
+function animateBars(idx,on){
+  const card=document.querySelector(`.track-card[data-idx="${idx}"]`);
+  if(!card)return;
+  card.querySelectorAll('.wm-bar').forEach((b,i)=>{
+    b.style.animation=on?`wavePulse ${.4+Math.random()*.5}s ${i*.035}s ease-in-out infinite`:'';
+  });
+}
+function togglePlay(idx){
+  const audio=document.getElementById(`audio${idx}`);
+  const card=document.querySelector(`.track-card[data-idx="${idx}"]`);
+  const btn=card.querySelector('.play-btn');
+  if(currentIdx===idx){
+    if(audio.paused){audio.play();btn.textContent='⏸';animateBars(idx,true);startProgress(idx);}
+    else{audio.pause();btn.textContent='▶';animateBars(idx,false);if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
+  }else{
+    stopCurrent();currentAudio=audio;currentIdx=idx;
+    audio.play().catch(()=>{});
+    card.classList.add('playing');btn.textContent='⏸';
+    animateBars(idx,true);startProgress(idx);
+    audio.onended=()=>stopCurrent();
+  }
+}
+function seek(e,idx){
+  const audio=document.getElementById(`audio${idx}`);
+  if(!audio.duration)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+}
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.play-btn');
+  if(btn){togglePlay(Number(btn.dataset.idx));return;}
+  const wm=e.target.closest('.waveform-mini');
+  if(wm){const idx=Number(wm.dataset.idx);currentIdx===idx?seek(e,idx):togglePlay(idx);return;}
+  const pw=e.target.closest('.progress-wrap');
+  if(pw)seek(e,Number(pw.dataset.idx));
+});
+
+/* ══ カード生成 ══ */
+let cardIndex=0;
+function buildCards(tracks,gridId,isSE){
+  const grid=document.getElementById(gridId);
+  tracks.forEach(track=>{
+    const idx=cardIndex++;
+    const src=`audio/${track.file}.mp3`;
+    const dlname=`${track.dlname}.mp3`;
+    const card=document.createElement('div');
+    card.className='track-card'+(isSE?' se-card':'');
+    card.dataset.idx=idx;
+    card.innerHTML=`
+      <div class="track-name">${track.label}</div>
+      <div class="track-meta">
+        ${track.dur!=='—'?`<span class="meta-chip chip-time">⏱ ${track.dur}</span>`:''}
+        <span class="meta-chip chip-mp3">MP3</span>
+      </div>
+      <div class="player-area">
+        <div class="progress-wrap" data-idx="${idx}"><div class="progress-bar" id="prog${idx}"></div></div>
+        <div class="time-row"><span id="cur${idx}">0:00</span><span id="dur${idx}">${track.dur!=='—'?track.dur:''}</span></div>
+        <div class="ctrl-row">
+          <button class="play-btn" data-idx="${idx}" aria-label="再生">▶</button>
+          <div class="waveform-mini" id="wm${idx}" data-idx="${idx}"></div>
+        </div>
+      </div>
+      <div class="dl-row">
+        <a class="dl-btn" href="${src}" download="${dlname}">⬇ MP3</a>
+      </div>
+      <audio id="audio${idx}" preload="none"><source src="${src}" type="audio/mpeg"></audio>`;
+    grid.appendChild(card);
+    const wm=document.getElementById(`wm${idx}`);
+    for(let i=0;i<28;i++){const b=document.createElement('div');b.className='wm-bar';b.style.height=(20+Math.random()*78)+'%';wm.appendChild(b);}
+  });
+}
+
+/* ══ タブ ══ */
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ══ 初期化 ══ */
+buildCards(BGM.night,  'grid-night',  false);
+buildCards(BGM.steam,  'grid-steam',  false);
+buildCards(BGM.journey,'grid-journey',false);
+buildCards(BGM.drama,  'grid-drama',  false);
+buildCards(BGM.comical,'grid-comical',false);
+buildCards(SE.ui,    'grid-ui',    true);
+buildCards(SE.gacha, 'grid-gacha', true);
+buildCards(SE.magic, 'grid-magic', true);
+buildCards(SE.kawaii,'grid-kawaii',true);
+
+(function(){
+  const notes=['♩','♪','♫','♬'],bg=document.getElementById('notesBg');
+  for(let i=0;i<18;i++){
+    const el=document.createElement('span');el.className='note';
+    el.textContent=notes[Math.floor(Math.random()*notes.length)];
+    el.style.left=Math.random()*100+'vw';
+    el.style.animation=`floatNote ${12+Math.random()*14}s ${Math.random()*12}s linear infinite`;
+    el.style.fontSize=(.9+Math.random()*1.2)+'rem';bg.appendChild(el);
+  }
+})();
+(function(){
+  const deco=document.getElementById('waveDeco');
+  [35,55,80,100,70,90,60,40,75,55,85,45].forEach((h,i)=>{
+    const b=document.createElement('div');b.className='wave-bar';
+    b.style.height=h+'%';
+    b.style.animationDuration=(.6+Math.random()*.6)+'s';
+    b.style.animationDelay=(i*.07)+'s';deco.appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>
