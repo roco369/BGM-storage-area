@@ -87,6 +87,7 @@
   .cat-journey{background:rgba(160,210,180,.25);color:#2d6a50;border:1px solid rgba(160,210,180,.4);}
   .cat-drama  {background:rgba(220,160,180,.25);color:#8a2a50;border:1px solid rgba(220,160,180,.4);}
   .cat-comical{background:rgba(255,220,100,.25);color:#7a5a00;border:1px solid rgba(255,220,100,.4);}
+  .cat-pop    {background:rgba(255,180,220,.25);color:#8a2060;border:1px solid rgba(255,180,220,.4);}
   .cat-ui     {background:rgba(184,216,240,.35);color:#2a5080;border:1px solid rgba(184,216,240,.5);}
   .cat-gacha  {background:rgba(255,200,120,.25);color:#7a4a00;border:1px solid rgba(255,200,120,.4);}
   .cat-magic  {background:rgba(220,180,255,.30);color:#6a2a90;border:1px solid rgba(220,180,255,.4);}
@@ -202,6 +203,8 @@
   <div class="track-grid" id="grid-drama"></div>
   <div class="cat-label cat-comical">🥬 コミカル</div>
   <div class="track-grid" id="grid-comical"></div>
+  <div class="cat-label cat-pop">🎉 ポップ・デジタル</div>
+  <div class="track-grid" id="grid-pop"></div>
 </div>
 <div class="section" id="sec-se">
   <div class="section-header">
@@ -266,32 +269,60 @@ const BGM = {
   night:[
     {file:'おぼろ月夜',        label:'おぼろ月夜',         dlname:'おぼろ月夜',         dur:'2:24'},
     {file:'静寂のともしび',    label:'静寂のともしび',     dlname:'静寂のともしび',     dur:'2:18'},
-    {file:'灯火',            label:'灯火',               dlname:'灯火',               dur:'2:38'},
-    {file:'琥珀のまどろみ',      label:'琥珀のまどろみ',     dlname:'琥珀のまどろみ',     dur:'2:04'},
-    {file:'真珠色の入江',          label:'真珠色の入江',       dlname:'真珠色の入江',       dur:'2:03'},
+    {file:'灯火',              label:'灯火',               dlname:'灯火',               dur:'2:38'},
+    {file:'琥珀のまどろみ',    label:'琥珀のまどろみ',     dlname:'琥珀のまどろみ',     dur:'2:04'},
+    {file:'真珠色の入江',      label:'真珠色の入江',       dlname:'真珠色の入江',       dur:'2:03'},
+    {file:'星のまたたき',      label:'星のまたたき',       dlname:'星のまたたき',       dur:'—'},
+    {file:'夢の続き',          label:'夢の続き',           dlname:'夢の続き',           dur:'—'},
   ],
   steam:[
-    {file:'歯車仕掛けの聖域',       label:'歯車仕掛けの聖域',   dlname:'歯車仕掛けの聖域',   dur:'1:08'},
-    {file:'時を刻む寺院',            label:'時を刻む寺院',       dlname:'時を刻む寺院',       dur:'1:53'},
-    {file:'アンティークワルツ',        label:'アンティークワルツ', dlname:'アンティークワルツ', dur:'1:43'},
-    {file:'琥珀色の宮廷',        label:'琥珀色の宮廷',       dlname:'琥珀色の宮廷',       dur:'0:48'},
-    {file:'ブロンズの行進曲',         label:'ブロンズの行進曲',   dlname:'ブロンズの行進曲',   dur:'1:12'},
+    {file:'歯車仕掛けの聖域',  label:'歯車仕掛けの聖域',   dlname:'歯車仕掛けの聖域',   dur:'1:08'},
+    {file:'時を刻む寺院',      label:'時を刻む寺院',       dlname:'時を刻む寺院',       dur:'1:53'},
+    {file:'アンティークワルツ', label:'アンティークワルツ', dlname:'アンティークワルツ', dur:'1:43'},
+    {file:'琥珀色の宮廷',      label:'琥珀色の宮廷',       dlname:'琥珀色の宮廷',       dur:'0:48'},
+    {file:'ブロンズの行進曲',  label:'ブロンズの行進曲',   dlname:'ブロンズの行進曲',   dur:'1:12'},
+    {file:'からくり時計のワルツ', label:'からくり時計のワルツ', dlname:'からくり時計のワルツ', dur:'—'},
   ],
   journey:[
-    {file:'楓の羅針盤',      label:'楓の羅針盤',         dlname:'楓の羅針盤',         dur:'2:18'},
-    {file:'秋風のパレード',       label:'秋風のパレード',     dlname:'秋風のパレード',     dur:'2:18'},
-    {file:'移ろいの道標', label:'移ろいの道標',       dlname:'移ろいの道標',       dur:'1:57'},
-    {file:'絹の波打ち際',            label:'絹の波打ち際',       dlname:'絹の波打ち際',       dur:'1:54'},
-    {file:'夕暮れノイズ',         label:'夕暮れノイズ',       dlname:'夕暮れノイズ',       dur:'2:32'},
+    {file:'楓の羅針盤',        label:'楓の羅針盤',         dlname:'楓の羅針盤',         dur:'2:18'},
+    {file:'秋風のパレード',    label:'秋風のパレード',     dlname:'秋風のパレード',     dur:'2:18'},
+    {file:'移ろいの道標',      label:'移ろいの道標',       dlname:'移ろいの道標',       dur:'1:57'},
+    {file:'絹の波打ち際',      label:'絹の波打ち際',       dlname:'絹の波打ち際',       dur:'1:54'},
+    {file:'夕暮れノイズ',      label:'夕暮れノイズ',       dlname:'夕暮れノイズ',       dur:'2:32'},
+    {file:'雨上がりの空',      label:'雨上がりの空',       dlname:'雨上がりの空',       dur:'—'},
+    {file:'静かな森',          label:'静かな森',           dlname:'静かな森',           dur:'—'},
+    {file:'朝の散歩道',        label:'朝の散歩道',         dlname:'朝の散歩道',         dur:'—'},
+    {file:'おさんぽ日和',      label:'おさんぽ日和',       dlname:'おさんぽ日和',       dur:'—'},
+    {file:'木漏れ日のティータイム', label:'木漏れ日のティータイム', dlname:'木漏れ日のティータイム', dur:'—'},
+    {file:'夕暮れの街',        label:'夕暮れの街',         dlname:'夕暮れの街',         dur:'—'},
+    {file:'陽だまりの散歩道',  label:'陽だまりの散歩道',   dlname:'陽だまりの散歩道',   dur:'—'},
+    {file:'風のささやき',      label:'風のささやき',       dlname:'風のささやき',       dur:'—'},
   ],
   drama:[
-    {file:'古のレクイエム',      label:'古のレクイエム',       dlname:'古のレクイエム',       dur:'1:49'},
-    {file:'楓風のファンファーレ',        label:'楓風のファンファーレ', dlname:'楓風のファンファーレ', dur:'1:38'},
-    {file:'不思議な菓子職人',      label:'不思議な菓子職人',     dlname:'不思議な菓子職人',     dur:'0:27'},
+    {file:'古のレクイエム',    label:'古のレクイエム',     dlname:'古のレクイエム',     dur:'1:49'},
+    {file:'楓風のファンファーレ', label:'楓風のファンファーレ', dlname:'楓風のファンファーレ', dur:'1:38'},
+    {file:'不思議な菓子職人',  label:'不思議な菓子職人',   dlname:'不思議な菓子職人',   dur:'0:27'},
+    {file:'虹色のエピローグ',  label:'虹色のエピローグ',   dlname:'虹色のエピローグ',   dur:'—'},
+    {file:'はじまりの予感',    label:'はじまりの予感',     dlname:'はじまりの予感',     dur:'—'},
+  ],
+  pop:[
+    {file:'ビクトリーステップ', label:'ビクトリーステップ', dlname:'ビクトリーステップ', dur:'—'},
+    {file:'ビットダッシュ',    label:'ビットダッシュ',     dlname:'ビットダッシュ',     dur:'—'},
+    {file:'フェスティバルポップ', label:'フェスティバルポップ', dlname:'フェスティバルポップ', dur:'—'},
+    {file:'きらめきキャンバス', label:'きらめきキャンバス', dlname:'きらめきキャンバス', dur:'—'},
+    {file:'きらめきフルスロットル', label:'きらめきフルスロットル', dlname:'きらめきフルスロットル', dur:'—'},
+    {file:'サンシャインドライブ', label:'サンシャインドライブ', dlname:'サンシャインドライブ', dur:'—'},
+    {file:'シュガーポップ',    label:'シュガーポップ',     dlname:'シュガーポップ',     dur:'—'},
+    {file:'デジタルマーチ',    label:'デジタルマーチ',     dlname:'デジタルマーチ',     dur:'—'},
+    {file:'ドリームコネクト',  label:'ドリームコネクト',   dlname:'ドリームコネクト',   dur:'—'},
+    {file:'ハピネスチェイン',  label:'ハピネスチェイン',   dlname:'ハピネスチェイン',   dur:'—'},
+    {file:'ひかりの粒',        label:'ひかりの粒',         dlname:'ひかりの粒',         dur:'—'},
+    {file:'ピクセルハート',    label:'ピクセルハート',     dlname:'ピクセルハート',     dur:'—'},
+    {file:'無敵のサンシャイン', label:'無敵のサンシャイン', dlname:'無敵のサンシャイン', dur:'—'},
   ],
   comical:[
     {file:'キャベツの冒険',    label:'キャベツの冒険',     dlname:'キャベツの冒険',     dur:'0:52'},
-    {file:'びっくり野菜大砲',        label:'びっくり野菜大砲',   dlname:'びっくり野菜大砲',   dur:'0:53'},
+    {file:'びっくり野菜大砲',  label:'びっくり野菜大砲',   dlname:'びっくり野菜大砲',   dur:'0:53'},
   ],
 };
 
@@ -476,6 +507,7 @@ buildCards(BGM.steam,  'grid-steam',  false);
 buildCards(BGM.journey,'grid-journey',false);
 buildCards(BGM.drama,  'grid-drama',  false);
 buildCards(BGM.comical,'grid-comical',false);
+buildCards(BGM.pop,    'grid-pop',    false);
 buildCards(SE.ui,    'grid-ui',    true);
 buildCards(SE.gacha, 'grid-gacha', true);
 buildCards(SE.magic, 'grid-magic', true);
