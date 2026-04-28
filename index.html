@@ -433,7 +433,7 @@ function buildCards(tracks,gridId,isSE){
   const grid=document.getElementById(gridId);
   tracks.forEach(track=>{
     const idx=cardIndex++;
-    const src=`audio/${track.file}.mp3`;
+    const src=`audio/${encodeURIComponent(track.file)}.mp3`;
     const dlname=`${track.dlname}.mp3`;
     const card=document.createElement('div');
     card.className='track-card'+(isSE?' se-card':'');
@@ -455,7 +455,7 @@ function buildCards(tracks,gridId,isSE){
       <div class="dl-row">
         <a class="dl-btn" href="${src}" download="${dlname}">⬇ MP3</a>
       </div>
-      <audio id="audio${idx}" preload="none"><source src="${src}" type="audio/mpeg"></audio>`;
+      <audio id="audio${idx}" src="${src}" preload="none"></audio>`;
     grid.appendChild(card);
     const wm=document.getElementById(`wm${idx}`);
     for(let i=0;i<28;i++){const b=document.createElement('div');b.className='wm-bar';b.style.height=(20+Math.random()*78)+'%';wm.appendChild(b);}
